@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>BizomHire | Talent Acquisition Dashboard</title>
+
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- Header -->
+<div class="header-bizom">
+<div class="container">
+<div class="row align-items-center py-4">
+<div class="col-auto">
+<img src="/resources/images/bizom-logo-white.png" alt="Bizom Logo" class="bizom-logo-header" onerror="this.src='/resources/images/bizom-logo.svg'">
+</div>
+<div class="col">
+<h1 class="mb-1">BizomHire</h1>
+<p class="header-subtitle mb-0">Talent Acquisition Dashboard</p>
+</div>
+<div class="col-auto text-end">
+<div class="current-date" id="currentDate"></div>
+<div class="user-badge mt-2">HR Portal</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="container mt-4">
+
+<!-- Stats Cards -->
+<div class="row mb-4 g-3">
+<div class="col-md-4">
+<div class="stat-card stat-card-purple">
+<div class="stat-content">
+<div class="stat-label">Total Job Openings</div>
+<div class="stat-value" id="total">0</div>
+</div>
+<div class="stat-icon-pro">📊</div>
+</div>
+</div>
+
+<div class="col-md-4">
+<div class="stat-card stat-card-blue">
+<div class="stat-content">
+<div class="stat-label">Offers Extended</div>
+<div class="stat-value" id="offers">0</div>
+</div>
+<div class="stat-icon-pro">🎯</div>
+</div>
+</div>
+
+<div class="col-md-4">
+<div class="stat-card stat-card-green">
+<div class="stat-content">
+<div class="stat-label">Candidates Joined</div>
+<div class="stat-value" id="joined">0</div>
+</div>
+<div class="stat-icon-pro">✓</div>
+</div>
+</div>
+</div>
+
+<!-- Filters -->
+<div class="section-card mb-4">
+<h4 class="section-title">Filter Openings</h4>
+<div class="row g-3">
+<div class="col-md-2">
+<select id="filterDept" class="form-select form-control-modern" onchange="applyFilters()">
+<option value="">All Departments</option>
+</select>
+</div>
+<div class="col-md-2">
+<select id="filterRole" class="form-select form-control-modern" onchange="applyFilters()">
+<option value="">All Roles</option>
+</select>
+</div>
+<div class="col-md-2">
+<select id="filterLevel" class="form-select form-control-modern" onchange="applyFilters()">
+<option value="">All Levels</option>
+</select>
+</div>
+<div class="col-md-2">
+<select id="filterStatus" class="form-select form-control-modern" onchange="applyFilters()">
+<option value="">All Status</option>
+<option value="Published">Published</option>
+<option value="Offered">Offered</option>
+<option value="Joined">Joined</option>
+<option value="Rejected">Rejected</option>
+</select>
+</div>
+<div class="col-md-2">
+<button onclick="clearFilters()" class="btn btn-outline-secondary w-100">Clear Filters</button>
+</div>
+</div>
+</div>
+
+<!-- Add Job -->
+<div class="section-card mb-4">
+<h4 class="section-title">Add New Job Opening</h4>
+<div class="row g-3 mb-3">
+<div class="col-md-2">
+<label class="form-label">Department</label>
+<select id="department" class="form-select form-control-modern">
+<option value="">Select Department</option>
+</select>
+</div>
+<div class="col-md-2">
+<label class="form-label">Role</label>
+<select id="role" class="form-select form-control-modern">
+<option value="">Select Role</option>
+</select>
+</div>
+<div class="col-md-2">
+<label class="form-label">Level</label>
+<select id="level" class="form-select form-control-modern">
+<option value="">Select Level</option>
+</select>
+</div>
+<div class="col-md-2">
+<label class="form-label">Posted Date</label>
+<input id="posted" type="date" class="form-control form-control-modern">
+</div>
+<div class="col-md-1">
+<label class="form-label">Expected TAT</label>
+<input id="expectedTAT" type="number" class="form-control form-control-modern" placeholder="Days" value="7">
+</div>
+<div class="col-md-2">
+<label class="form-label">Posted By (HR)</label>
+<input id="hrName" type="text" class="form-control form-control-modern" placeholder="Your name">
+</div>
+<div class="col-md-1 d-flex align-items-end">
+<button onclick="addJob()" class="btn btn-primary-custom w-100">Add</button>
+</div>
+</div>
+
+<!-- Bulk Upload -->
+<div class="bulk-upload-section">
+<label class="form-label"><strong>Bulk Upload</strong></label>
+<div class="d-flex gap-2">
+<input type="file" id="bulkFile" accept=".csv" class="form-control form-control-modern" style="max-width: 300px;">
+<button onclick="bulkUpload()" class="btn btn-info-custom">Upload CSV</button>
+</div>
+</div>
+</div>
+
+<hr>
+
+<!-- TAT Color Legend -->
+<div class="tat-legend">
+<strong>TAT Status Guide:</strong>
+<span class="badge badge-green">On Track</span>
+<span class="badge badge-amber">Within 3 Days</span>
+<span class="badge badge-red">Exceeded</span>
+</div>
+
+<!-- Jobs Table -->
+<div class="section-card">
+<div class="d-flex justify-content-between align-items-center mb-3">
+<h4 class="section-title mb-0">All Job Openings</h4>
+<button onclick="exportJobs()" class="btn btn-success-custom">Export to CSV</button>
+</div>
+
+<div class="table-responsive">
+<table class="table table-modern" id="jobTable">
+<thead>
+<tr>
+<th>Department</th>
+<th>Role</th>
+<th>Level</th>
+<th>Status</th>
+<th>Posted Date</th>
+<th>Offered Date</th>
+<th>Expected TAT</th>
+<th>Actual TAT</th>
+<th>Posted By</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+</div>
+</div>
+
+<!-- Configuration Section -->
+<div class="section-card mt-4">
+<h4 class="section-title">Configuration</h4>
+
+<div class="accordion" id="configAccordion">
+<div class="accordion-item">
+<h2 class="accordion-header">
+<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#deptConfig">
+Manage Departments
+</button>
+</h2>
+<div id="deptConfig" class="accordion-collapse collapse" data-bs-parent="#configAccordion">
+<div class="accordion-body">
+<div class="input-group mb-2">
+<input id="newDept" placeholder="New Department" class="form-control form-control-modern">
+<button onclick="addDepartment()" class="btn btn-primary-custom">Add</button>
+</div>
+<ul id="deptList" class="list-group mt-2"></ul>
+</div>
+</div>
+</div>
+
+<div class="accordion-item">
+<h2 class="accordion-header">
+<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#roleConfig">
+Manage Roles
+</button>
+</h2>
+<div id="roleConfig" class="accordion-collapse collapse" data-bs-parent="#configAccordion">
+<div class="accordion-body">
+<div class="input-group mb-2">
+<input id="newRole" placeholder="New Role" class="form-control form-control-modern">
+<button onclick="addRole()" class="btn btn-primary-custom">Add</button>
+</div>
+<ul id="roleList" class="list-group mt-2"></ul>
+</div>
+</div>
+</div>
+
+<div class="accordion-item">
+<h2 class="accordion-header">
+<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#levelConfig">
+Manage Levels
+</button>
+</h2>
+<div id="levelConfig" class="accordion-collapse collapse" data-bs-parent="#configAccordion">
+<div class="accordion-body">
+<div class="input-group mb-2">
+<input id="newLevel" placeholder="New Level" class="form-control form-control-modern">
+<button onclick="addLevel()" class="btn btn-primary-custom">Add</button>
+</div>
+<ul id="levelList" class="list-group mt-2"></ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1">
+<div class="modal-dialog modal-lg">
+<div class="modal-content">
+<div class="modal-header bg-gradient-primary">
+<h5 class="modal-title text-white">Edit Job Opening</h5>
+<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+</div>
+<div class="modal-body">
+<input type="hidden" id="editId">
+<div class="row g-3">
+<div class="col-md-6">
+<label class="form-label">Department</label>
+<select id="editDept" class="form-select form-control-modern"></select>
+</div>
+<div class="col-md-6">
+<label class="form-label">Role</label>
+<select id="editRole" class="form-select form-control-modern"></select>
+</div>
+<div class="col-md-6">
+<label class="form-label">Level</label>
+<select id="editLevel" class="form-select form-control-modern"></select>
+</div>
+<div class="col-md-6">
+<label class="form-label">Status</label>
+<select id="editStatus" class="form-select form-control-modern">
+<option>Published</option>
+<option>Offered</option>
+<option>Joined</option>
+<option>Rejected</option>
+</select>
+</div>
+<div class="col-md-6">
+<label class="form-label">Posted Date</label>
+<input id="editPosted" type="date" class="form-control form-control-modern">
+</div>
+<div class="col-md-6">
+<label class="form-label">Offered Date</label>
+<input id="editOffered" type="date" class="form-control form-control-modern">
+</div>
+<div class="col-md-6">
+<label class="form-label">Expected TAT (days)</label>
+<input id="editTAT" type="number" class="form-control form-control-modern">
+</div>
+<div class="col-md-6">
+<label class="form-label">Posted By (HR)</label>
+<input id="editHRName" type="text" class="form-control form-control-modern" placeholder="HR name">
+</div>
+</div>
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+<button type="button" class="btn btn-primary-custom" onclick="saveEdit()">Save Changes</button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Footer -->
+<footer class="text-center py-4 mt-5">
+<div class="mb-2">
+<strong>BIZOM</strong> <span class="text-muted">| Business on Move</span>
+</div>
+<p class="mb-0 text-muted">© 2026 Bizom - The Retail Intelligence Platform | BizomHire v1.0</p>
+</footer>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>
