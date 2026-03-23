@@ -1,0 +1,43 @@
+# This file specifies files that are *not* uploaded to Google Cloud
+# using gcloud. It follows the same syntax as .gitignore, with the addition of
+# "#!include" directives (which insert the entries of the given .gitignore-style
+# file at that point).
+
+# Node.js dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Environment files
+.env
+.env.local
+
+# SQLite database (not needed for Firestore)
+*.db
+database.db
+
+# Uploads directory (temporary files)
+uploads/*
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Documentation (optional, uncomment if you don't want to deploy README)
+# README.md
+# public/resources/README.md
+
+# Test files
+*.test.js
+test/

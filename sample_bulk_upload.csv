@@ -1,7 +1,7 @@
-department,role,level,status,posted_date,offered_date,expected_tat,hr_name
-Engineering,Software Engineer,Senior,Published,2026-03-01,,7,Priya Sharma
-Engineering,DevOps Engineer,Mid,Offered,2026-02-20,2026-02-28,7,Rahul Kumar
-Sales,Account Manager,Junior,Published,2026-03-02,,10,Anjali Verma
-Marketing,Content Writer,Mid,Published,2026-02-25,,14,Neha Singh
-HR,HR Specialist,Senior,Joined,2026-02-15,2026-02-22,7,Vikram Patel
-Product,Product Manager,Senior,Published,2026-02-28,,10,Amit Desai
+department,role,level,location,status,posted_date,offered_date,expected_tat,hr_name
+Engineering,Software Engineer,Senior,Bangalore,Published,2026-03-01,,7,Priya Sharma
+Engineering,DevOps Engineer,Mid,Mumbai,Offered,2026-02-20,2026-02-28,7,Rahul Kumar
+Sales,Account Manager,Junior,Delhi,Published,2026-03-02,,10,Anjali Verma
+Marketing,Content Writer,Mid,Pune,Published,2026-02-25,,14,Neha Singh
+HR,HR Specialist,Senior,Bangalore,Joined,2026-02-15,2026-02-22,7,Vikram Patel
+Product,Product Manager,Senior,Hyderabad,Published,2026-02-28,,10,Amit Desai
